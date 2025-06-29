@@ -458,7 +458,7 @@ text-align: left; /* Add this line */
         <a href="https://www.reddit.com/r/Dreams/" target="_blank">
           r/Dreams
         </a> community, posted b/w Mar. 2016 to Sept. 2022, helped us uncover this underlying taxonomy of dream themes.
-        Hover over the nodes to explore individual themes. Dream excerpts have been paraphrased to preserve user
+        Hover or tap on the nodes to explore individual themes. Dream excerpts have been paraphrased to preserve user
         privacy.
       </p>
     </div>
@@ -686,20 +686,23 @@ if (isPortraitMobile) {
           return averageColor(sourceNode.color, targetNode.color);
         });
 let selectedNodeId = null;
-let lastClickTime = 0;
-let lastHoverTime = 0;
-const RACE_THRESHOLD = 100; // milliseconds
-
+// let lastClickTime = 0;
+// let lastHoverTime = 0;
+// const RACE_THRESHOLD = 100; // milliseconds
+const nodeElements = new Set();
       // Draw nodes
       const nodeGroup = scaleGroup.selectAll(".node")
         .data(localNodes)
         .enter()
         .append("g")
         .attr("transform", d => `translate(${d.x},${d.y})`)
+        .each(function () {
+    nodeElements.add(this); // track each actual <g> DOM element
+  })
         .on("mouseover", function (event, d) {
-            const now = Date.now();
-  if (now - lastClickTime < RACE_THRESHOLD) {return;}
-  lastHoverTime = now;
+  //           const now = Date.now();
+  // if (now - lastClickTime < RACE_THRESHOLD) {return;}
+  // lastHoverTime = now;
           selectedNodeId = d.id; 
           d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
           d3.select(this).raise();
@@ -727,49 +730,49 @@ const RACE_THRESHOLD = 100; // milliseconds
             .style("font-weight", "normal");
         })
 
-.on("click", function (event, d) {
-    const now = Date.now();
-  if (now - lastHoverTime < RACE_THRESHOLD) {return;}
-  lastClickTime = now;
-  event.stopPropagation();
+// .on("click", function (event, d) {
+  //   const now = Date.now();
+  // if (now - lastHoverTime < RACE_THRESHOLD) {return;}
+  // lastClickTime = now;
+  // event.stopPropagation();
 
-  // If same node is clicked again → hide card
-  if (selectedNodeId === d.id) {
-    hideCard();
-          d3.select(this).select("circle").attr("fill", d.color);
-          labels.filter(l => l.id === d.id)
-            .transition()
-            .duration(200)
-            .style("opacity", labelOpacity)
-            .style("font-weight", "normal");
-    selectedNodeId = null;
-    return;
-  }
+  // // If same node is clicked again → hide card
+  // if (selectedNodeId === d.id) {
+  //   hideCard();
+  //         d3.select(this).select("circle").attr("fill", d.color);
+  //         labels.filter(l => l.id === d.id)
+  //           .transition()
+  //           .duration(200)
+  //           .style("opacity", labelOpacity)
+  //           .style("font-weight", "normal");
+  //   selectedNodeId = null;
+  //   return;
+  // }
 
-  if (selectedNodeId != null) {
-      hideCard();
-    const lastNode = d3.selectAll(".node").filter(n => n.id === selectedNodeId);
-    lastNode.select("circle").attr("fill", n => n.color);
+  // if (selectedNodeId != null) {
+  //     hideCard();
+  //   const lastNode = d3.selectAll(".node").filter(n => n.id === selectedNodeId);
+  //   lastNode.select("circle").attr("fill", n => n.color);
 
-    labels.filter(l => l.id === selectedNodeId)
-      .transition()
-      .duration(200)
-      .style("opacity", labelOpacity)
-      .style("font-weight", "normal");
-  }
+  //   labels.filter(l => l.id === selectedNodeId)
+  //     .transition()
+  //     .duration(200)
+  //     .style("opacity", labelOpacity)
+  //     .style("font-weight", "normal");
+  // }
 
 
 
-      selectedNodeId = d.id; 
-          d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
-          d3.select(this).raise();
-          showCard(d);
-          updateCardPosition(event);
-          labels.filter(l => l.id === d.id)
-            .transition()
-            .duration(200)
-            .style("opacity", 1)
-            .style("font-weight", "bold");
+  //     selectedNodeId = d.id; 
+  //         d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
+  //         d3.select(this).raise();
+  //         showCard(d);
+  //         updateCardPosition(event);
+  //         labels.filter(l => l.id === d.id)
+  //           .transition()
+  //           .duration(200)
+  //           .style("opacity", 1)
+  //           .style("font-weight", "bold");
 
 
 
@@ -784,7 +787,34 @@ const RACE_THRESHOLD = 100; // milliseconds
 
   // showCard(d);
   // updateCardPosition(event);
+// });
+// Global click to hide card
+// document.body.addEventListener("click", function () {
+//   // Check if the click target was inside a node
+//   const clickedInsideNode = event.target.closest(".node");
+
+//   if (!clickedInsideNode) {
+//     hideCard();
+//     selectedNodeId = null;
+//   }
+// });
+document.addEventListener("click", function (event) {
+  let insideNode = false;
+
+  for (const nodeEl of nodeElements) {
+    if (nodeEl.contains(event.target)) {
+      insideNode = true;
+      break;
+    }
+  }
+
+  if (!insideNode) {
+    hideCard();
+    selectedNodeId = null;
+  }
 });
+
+
 
       nodeGroup.append("circle")
         .attr("class", "node-border")
