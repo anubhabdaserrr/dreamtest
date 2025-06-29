@@ -682,6 +682,7 @@ if (isPortraitMobile) {
           const targetNode = localNodes.find(n => n.id === d.target);
           return averageColor(sourceNode.color, targetNode.color);
         });
+let selectedNodeId = null;
 
       // Draw nodes
       const nodeGroup = scaleGroup.selectAll(".node")
@@ -690,6 +691,7 @@ if (isPortraitMobile) {
         .append("g")
         .attr("transform", d => `translate(${d.x},${d.y})`)
         .on("mouseover", function (event, d) {
+          selectedNodeId = d.id; 
           d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
           d3.select(this).raise();
           showCard(d);
@@ -701,10 +703,12 @@ if (isPortraitMobile) {
             .style("font-weight", "bold");
         })
         .on("mousemove", function (event, d) {
+          selectedNodeId = d.id; 
           updateCardPosition(event);
           showCard(d);
         })
         .on("mouseout", function (event, d) {
+          selectedNodeId = null; 
           hideCard();
           d3.select(this).select("circle").attr("fill", d.color);
           labels.filter(l => l.id === d.id)
@@ -712,7 +716,77 @@ if (isPortraitMobile) {
             .duration(200)
             .style("opacity", labelOpacity)
             .style("font-weight", "normal");
-        });
+        })
+
+.on("click", function (event, d) {
+  event.stopPropagation();
+
+  // If same node is clicked again → hide card
+  if (selectedNodeId === d.id) {
+    hideCard();
+          d3.select(this).select("circle").attr("fill", d.color);
+          labels.filter(l => l.id === d.id)
+            .transition()
+            .duration(200)
+            .style("opacity", labelOpacity)
+            .style("font-weight", "normal");
+    selectedNodeId = null;
+    return;
+  }
+
+  // Else show card for new node
+  if (selectedNodeId == null) {
+    selectedNodeId = d.id; 
+          d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
+          d3.select(this).raise();
+          showCard(d);
+          updateCardPosition(event);
+          labels.filter(l => l.id === d.id)
+            .transition()
+            .duration(200)
+            .style("opacity", 1)
+            .style("font-weight", "bold");
+} else {
+  // myVar has a value
+  // use hidecard logic
+   selectedNodeId = null;
+      hideCard();
+   
+
+
+    const lastNode = d3.selectAll(".node").filter(n => n.id === selectedNodeId);
+    lastNode.select("circle").attr("fill", n => n.color);
+
+    labels.filter(l => l.id === selectedNodeId)
+      .transition()
+      .duration(200)
+      .style("opacity", labelOpacity)
+      .style("font-weight", "normal");
+  }
+
+
+
+  // show new card
+      selectedNodeId = d.id; 
+          d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
+          d3.select(this).raise();
+          showCard(d);
+          updateCardPosition(event);
+          labels.filter(l => l.id === d.id)
+            .transition()
+            .duration(200)
+            .style("opacity", 1)
+            .style("font-weight", "bold");
+
+
+  // selectedNodeId = d.id;
+
+  // d3.selectAll("circle").attr("fill", n => n.color); // Reset others
+  // d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
+
+  // showCard(d);
+  // updateCardPosition(event);
+});
 
       nodeGroup.append("circle")
         .attr("class", "node-border")
