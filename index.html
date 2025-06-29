@@ -471,7 +471,7 @@ text-align: left; /* Add this line */
           <a href="https://epjdatascience.springeropen.com/articles/10.1140/epjds/s13688-025-00554-w"
             target="_blank">[Link]</a><br>
           <i>
-            <a href="https://anubhabdas.com/" target="_blank">iAnubhab Das</a>,
+            <a href="https://anubhabdas.com/" target="_blank">Anubhab Das</a>,
             <a href="https://x.com/miki7s/" target="_blank">Sanja Šćepanović</a>,
             <a href="https://www.lajello.com/" target="_blank">Luca Maria Aiello</a>,
             <a href="https://www.remrama.com/" target="_blank">Remington Mallett</a>,
@@ -749,7 +749,7 @@ let selectedNodeId = null;
 } else {
   // myVar has a value
   // use hidecard logic
-   selectedNodeId = null;
+  //  selectedNodeId = null;
       hideCard();
    
 
@@ -762,11 +762,10 @@ let selectedNodeId = null;
       .duration(200)
       .style("opacity", labelOpacity)
       .style("font-weight", "normal");
-  }
 
 
 
-  // show new card
+        // show new card
       selectedNodeId = d.id; 
           d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
           d3.select(this).raise();
@@ -777,6 +776,11 @@ let selectedNodeId = null;
             .duration(200)
             .style("opacity", 1)
             .style("font-weight", "bold");
+  }
+
+
+
+
 
 
   // selectedNodeId = d.id;
