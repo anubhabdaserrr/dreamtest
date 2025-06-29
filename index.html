@@ -798,21 +798,7 @@ const nodeElements = new Set();
 //     selectedNodeId = null;
 //   }
 // });
-document.addEventListener("click", function (event) {
-  let insideNode = false;
 
-  for (const nodeEl of nodeElements) {
-    if (nodeEl.contains(event.target)) {
-      insideNode = true;
-      break;
-    }
-  }
-
-  if (!insideNode) {
-    hideCard();
-    selectedNodeId = null;
-  }
-});
 
 
 
@@ -863,7 +849,25 @@ document.addEventListener("click", function (event) {
               .text(line);
           });
         });
+    
+document.addEventListener("click", function (event) {
+  let insideNode = false;
+
+  for (const nodeEl of nodeElements) {
+    if (nodeEl.contains(event.target)) {
+      insideNode = true;
+      break;
     }
+  }
+
+  if (!insideNode) {
+    hideCard();
+    selectedNodeId = null;
+  }
+});    
+    
+    
+      }
 
     let labels;
     renderGraph();
