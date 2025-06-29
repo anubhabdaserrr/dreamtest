@@ -686,6 +686,9 @@ if (isPortraitMobile) {
           return averageColor(sourceNode.color, targetNode.color);
         });
 let selectedNodeId = null;
+let lastClickTime = 0;
+let lastHoverTime = 0;
+const RACE_THRESHOLD = 100; // milliseconds
 
       // Draw nodes
       const nodeGroup = scaleGroup.selectAll(".node")
@@ -694,6 +697,9 @@ let selectedNodeId = null;
         .append("g")
         .attr("transform", d => `translate(${d.x},${d.y})`)
         .on("mouseover", function (event, d) {
+            const now = Date.now();
+  if (now - lastClickTime < RACE_THRESHOLD) {return;}
+  lastHoverTime = now;
           selectedNodeId = d.id; 
           d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
           d3.select(this).raise();
@@ -722,6 +728,9 @@ let selectedNodeId = null;
         })
 
 .on("click", function (event, d) {
+    const now = Date.now();
+  if (now - lastHoverTime < RACE_THRESHOLD) {return;}
+  lastClickTime = now;
   event.stopPropagation();
 
   // If same node is clicked again → hide card
@@ -922,7 +931,9 @@ if (percent >= 80) {
     document.getElementById('lightEle').style.display = 'block';
   }, 300);
 }
+
   </script>
+
 
 </body>
 
