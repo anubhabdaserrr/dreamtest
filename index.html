@@ -734,26 +734,8 @@ let selectedNodeId = null;
     return;
   }
 
-  // Else show card for new node
-  if (selectedNodeId == null) {
-    selectedNodeId = d.id; 
-          d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
-          d3.select(this).raise();
-          showCard(d);
-          updateCardPosition(event);
-          labels.filter(l => l.id === d.id)
-            .transition()
-            .duration(200)
-            .style("opacity", 1)
-            .style("font-weight", "bold");
-} else {
-  // myVar has a value
-  // use hidecard logic
-  //  selectedNodeId = null;
+  if (selectedNodeId != null) {
       hideCard();
-   
-
-
     const lastNode = d3.selectAll(".node").filter(n => n.id === selectedNodeId);
     lastNode.select("circle").attr("fill", n => n.color);
 
@@ -762,10 +744,10 @@ let selectedNodeId = null;
       .duration(200)
       .style("opacity", labelOpacity)
       .style("font-weight", "normal");
+  }
 
 
 
-        // show new card
       selectedNodeId = d.id; 
           d3.select(this).select("circle").attr("fill", d3.color(d.color).darker(1.5));
           d3.select(this).raise();
@@ -776,7 +758,7 @@ let selectedNodeId = null;
             .duration(200)
             .style("opacity", 1)
             .style("font-weight", "bold");
-  }
+
 
 
 
